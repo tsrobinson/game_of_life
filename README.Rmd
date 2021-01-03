@@ -1,0 +1,86 @@
+---
+title: "Game of Life"
+author: "T S Robinson"
+date: "03/01/2021"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+hook_output <- knitr::knit_hooks$get("output")
+
+knitr::knit_hooks$set(output = function(x, options) {
+  lines <- options$output.lines
+  if (is.null(lines)) {
+    return(hook_output(x, options))  # pass to default hook
+  }
+  x <- unlist(strsplit(x, "\n"))
+  more <- "..."
+  if (length(lines)==1) {        # first n lines
+    if (length(x) > lines) {
+      # truncate the output, but add ....
+      x <- c(head(x, lines), more, tail(x, 2))
+    }
+  } else {
+    x <- c(more, x[lines], more)
+  }
+  # paste these lines together
+  x <- paste(c(x, ""), collapse = "\n")
+  hook_output(x, options)
+})
+
+source("functions.R")
+```
+
+![](tsr_short.gif)
+
+This is an R implementation of John Conway's Game of Life (GoL) simulation.
+
+The game is played on a two-dimensional matrix where every cell is either 'alive' or 'dead'. During each round of the game (epoch), the following rules are applied simultaneously to each cell:
+
+1. If a cell is 'alive' and surrounded (horizontally, vertically, or diagonally) by 2 or 3 live cells, then it survives into the next epoch
+2. If a cell is currently 'dead' but surrounded by 2 live cells, then it becomes alive in the next epoch
+3. Otherwise, cells become/remain dead
+
+The game must be seeded by presenting a starting array of dead and alive cells. For example, we can load my initials as a series of live cells into a $25 \times 25$ grid, convert to a matrix, then plot (black squares indicate alive cells):
+
+```{r seed}
+seeding <- read_csv("gol_tsr.csv", col_names = FALSE)
+
+# Remove names 
+names(seeding) <- NULL
+rownames(seeding) <- NULL
+board_seeded <- as.matrix(seeding)
+
+# Plot initial game board
+plot_board(board_seeded)
+
+```
+
+## Running GoL
+
+The mechanics behind this implementation of the GoL can be found in `functions.R`.
+
+Here, we simply run the game for 150 epochs (i.e. 150 successive applications of the rules listed above). The `run_game` function returns a list of the board states after each epoch. The `animate_game` function converts and saves this list of matrices as a gif. 
+
+```{r run_game, echo=TRUE, output.lines = 3}
+# Play the game for 120 epochs
+tsr <- run_game(board_seeded, epochs = 150)
+
+# Animate the game
+tsr_gif <- animate_game(tsr,
+                        name = "tsr.gif", 
+                        initial_board = board_seeded)
+```
+
+And here's the full result: 
+
+![](tsr.gif)
+
+```{r anim_short, echo = FALSE, include = FALSE}
+tsr_short <- animate_game(tsr[20:50],
+                          name = "tsr_short.gif",
+                          delay = FALSE)
+```
