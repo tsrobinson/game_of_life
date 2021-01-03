@@ -1,38 +1,13 @@
 ---
-title: "Game of Life"
-author: "T S Robinson"
-date: "03/01/2021"
-output: 
-  html_document: 
-    keep_md: yes
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-hook_output <- knitr::knit_hooks$get("output")
-
-knitr::knit_hooks$set(output = function(x, options) {
-  lines <- options$output.lines
-  if (is.null(lines)) {
-    return(hook_output(x, options))  # pass to default hook
-  }
-  x <- unlist(strsplit(x, "\n"))
-  more <- "..."
-  if (length(lines)==1) {        # first n lines
-    if (length(x) > lines) {
-      # truncate the output, but add ....
-      x <- c(head(x, lines), more, tail(x, 2))
-    }
-  } else {
-    x <- c(more, x[lines], more)
-  }
-  # paste these lines together
-  x <- paste(c(x, ""), collapse = "\n")
-  hook_output(x, options)
-})
-
 source("functions.R")
 ```
+
+# Game of Life
 
 ![](tsr_short.gif)
 
@@ -46,7 +21,7 @@ The game is played on a two-dimensional matrix where every cell is either 'alive
 
 The game must be seeded by presenting a starting array of dead and alive cells. For example, we can load my initials as a series of live cells into a $25 \times 25$ grid, convert to a matrix, then plot (black squares indicate alive cells):
 
-```{r seed}
+```{r seed, echo = TRUE}
 seeding <- read_csv("gol_tsr.csv", col_names = FALSE)
 
 # Remove names 
@@ -63,9 +38,9 @@ plot_board(board_seeded)
 
 The mechanics behind this implementation of the GoL can be found in `functions.R`.
 
-Here, we simply run the game for 150 epochs (i.e. 150 successive applications of the rules listed above). The `run_game` function returns a list of the board states after each epoch. The `animate_game` function converts and saves this list of matrices as a gif. 
+Here, we simply run the game for 150 epochs (i.e. 150 successive applications of the rules listed above). The `run_game` function returns a list of the board states after each epoch. The `animate_game` function converts and saves this list of matrices as a gif.
 
-```{r run_game, echo=TRUE, output.lines = 3}
+```{r run_game, echo=FALSE}
 # Play the game for 120 epochs
 tsr <- run_game(board_seeded, epochs = 150)
 
