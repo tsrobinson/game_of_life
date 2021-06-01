@@ -14,12 +14,12 @@ following rules are applied simultaneously to each cell:
     diagonally) by 2 or 3 live cells, then it survives into the next
     epoch
 2.  If a cell is currently ‘dead’ but surrounded by 2 live cells, then
-    it becomes alive in the next epoch
+    it comes alive in the next epoch
 3.  Otherwise, cells become/remain dead
 
 The game must be seeded by presenting a starting array of dead and alive
 cells. For example, we can load my initials as a series of live cells
-into a \(25 \times 25\) grid, convert to a matrix, then plot (black
+into a 25 $\times$ 25 grid, convert to a matrix, then plot (black
 squares indicate alive cells):
 
 ``` r
